@@ -31,10 +31,6 @@ t_171819 <- bind_rows(elon_tweets_1718 %>%
                       elon_tweets_1819 %>%
                         mutate(person = "EM1819"))
 
-ggplot(t_171819, aes(x = Date, fill = person)) +
-  geom_histogram(position = "identity", bins = 20, show.legend = FALSE) +
-  facet_wrap(~person, ncol = 1)
-
 remove_reg <- "&amp;|&lt;|&gt;"
 tidy_tweets_171819 <- t_171819 %>%
   mutate(Tweet = str_remove_all(Tweet, remove_reg)) %>%
