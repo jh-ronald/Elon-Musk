@@ -27,27 +27,27 @@ download.file("https://raw.githubusercontent.com/jh-ronald/Elon-Musk/master/Elon
 elon_tweets_1819 <- read_csv(dl)
 
 t_171819 <- bind_rows(elon_tweets_1718 %>%
-                      mutate(person = "EM1718"),
+                        mutate(person = "EM1718"),
                       elon_tweets_1819 %>%
-                      mutate(person = "EM1819"))
+                        mutate(person = "EM1819"))
 
 ggplot(t_171819, aes(x = Date, fill = person)) +
-geom_histogram(position = "identity", bins = 20, show.legend = FALSE) +
-facet_wrap(~person, ncol = 1)
+  geom_histogram(position = "identity", bins = 20, show.legend = FALSE) +
+  facet_wrap(~person, ncol = 1)
 
 remove_reg <- "&amp;|&lt;|&gt;"
 tidy_tweets_171819 <- t_171819 %>%
-mutate(Tweet = str_remove_all(Tweet, remove_reg)) %>%
-unnest_tokens(word, Tweet) %>%
-filter(!word %in% stop_words$word,
-       !word %in% str_remove_all(stop_words$word, "'"),
-        str_detect(word, "[a-z]"))
+  mutate(Tweet = str_remove_all(Tweet, remove_reg)) %>%
+  unnest_tokens(word, Tweet) %>%
+  filter(!word %in% stop_words$word,
+         !word %in% str_remove_all(stop_words$word, "'"),
+         str_detect(word, "[a-z]"))
 
 frequency <- tidy_tweets_171819 %>%
-count(person, word, sort = TRUE) %>%
-left_join(tidy_tweets_171819 %>%
-          count(person, name = "total")) %>%
-mutate(freq = n / total)
+  count(person, word, sort = TRUE) %>%
+  left_join(tidy_tweets_171819 %>%
+              count(person, name = "total")) %>%
+  mutate(freq = n / total)
 
 frequency <- frequency %>%
   select(person, word, freq) %>%
